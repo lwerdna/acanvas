@@ -38,7 +38,8 @@ ACanvas::ACanvas(int x_, int y_, int w, int h, const char *label):
 /*****************************************************************************/
 void ACanvas::draw(void)
 {
-	printf("%s()\n", __func__);
+	//printf("%s()\n", __func__);
+
 	fl_copy_offscreen(0, 0, w(), h(), flo, 0, 0);
 }
 
@@ -48,7 +49,7 @@ void ACanvas::draw(void)
 
 void ACanvas::processCommand(string json)
 {
-	printf("%s()\n", __func__);
+	//printf("%s()\n", __func__);
 	
 	string m0, m1, m2, m3;
 
@@ -93,11 +94,11 @@ void ACanvas::processCommand(string json)
 		fl_end_offscreen();
 	}
 	else
-	if(RE2::FullMatch(json, "font (.*) (\\d+)", &m0, &m1)) {
-		string fontName = m0;
+	if(RE2::FullMatch(json, "font (\\d+) (\\d+)", &m0, &m1)) {
+		/* Fl_Font from Enumerations.H */
+		int face = atoi(m0.c_str());
 		int size = atoi(m1.c_str());
-		int fontId = 0;
-		fl_font(fontId, size);
+		fl_font(face, size);
 	}
 	else
 	if(RE2::FullMatch(json, "color ([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})", &m0, &m1, &m2)) {

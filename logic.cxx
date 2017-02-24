@@ -11,7 +11,7 @@ Driver *drv;
 
 void *monitor_stdin(void *arg)
 {
-	printf("%s()\n", __func__);	
+	//printf("%s()\n", __func__);	
 
 	while(1) {
 		size_t size;
@@ -33,9 +33,10 @@ void *monitor_stdin(void *arg)
 
 void onGuiInit(Driver *drv_, int argc, char **argv)
 {
-	printf("%s()\n", __func__);	
+	//printf("%s()\n", __func__);	
 
-	printf("%s\n", Fl_Display_Device::display_device()->class_name());
+	// Fl_Display_Device
+	//printf("%s\n", Fl_Display_Device::display_device()->class_name());
 
 	pthread_t thread;
 	pthread_attr_t attr;
@@ -43,13 +44,10 @@ void onGuiInit(Driver *drv_, int argc, char **argv)
 	drv = drv_;
 
 	pthread_attr_init(&attr);
-	printf("creating thread\n");
 	pthread_create(&thread, &attr, monitor_stdin, NULL);
-	printf("done creating thread\n");
-	
 }
 
 void onExit(void)
 {
-	printf("%s()\n", __func__);
+	//printf("%s()\n", __func__);
 }
