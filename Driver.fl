@@ -1,0 +1,42 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0304
+header_name {.h}
+code_name {.cxx}
+decl {\#include "ACanvas.h"} {public global
+}
+
+decl {\#include "logic.h"} {private global
+}
+
+class Driver {open
+} {
+  Function {make_window()} {open
+  } {
+    Fl_Window canvas {
+      label canvas open
+      xywh {392 237 1357 660} type Double hide
+      class ACanvas
+    } {}
+  }
+}
+
+Function {} {open
+} {
+  code {Driver drv;
+ACanvas *w = drv.make_window();
+
+onGuiInit(&drv, argc, argv);
+
+//Fl::add_idle(onIdle, &gui);
+w->end();
+
+/* enable multithreading */
+Fl::lock();
+
+w->show();
+/* all-in-one is Fl::run() but we also have Fl::wait() and Fl::check() and Fl::ready() */
+int rc = Fl::run();
+onExit();
+return rc;
+/* fluid will insert Fl::run() here... */} {}
+}
