@@ -10,20 +10,27 @@ decl {\#include "logic.h"} {private global
 
 class Driver {open
 } {
-  Function {make_window()} {open
+  Function {make_window(int x, int y, int width, int height)} {open
   } {
     Fl_Window canvas {
-      label canvas open
-      xywh {392 237 1357 660} type Double hide
+      label canvas
+      xywh {1164 619 256 256} type Double hide
       class ACanvas
     } {}
+    code {canvas->resize(x, y, width, height);} {}
   }
 }
 
 Function {} {open
 } {
-  code {Driver drv;
-ACanvas *w = drv.make_window();
+  code {int width = 256;
+int height = 256;
+
+if(argc > 1) width = atoi(argv[1]);
+if(argc > 2) height = atoi(argv[2]);
+
+Driver drv;
+ACanvas *w = drv.make_window(0, 0, width, height);
 
 onGuiInit(&drv, argc, argv);
 
@@ -38,5 +45,6 @@ w->show();
 int rc = Fl::run();
 onExit();
 return rc;
-/* fluid will insert Fl::run() here... */} {}
+/* fluid will insert Fl::run() here... */} {selected
+  }
 }

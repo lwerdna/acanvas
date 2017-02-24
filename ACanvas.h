@@ -11,7 +11,7 @@ using namespace std;
 typedef void (*ChessBoard_callback)(void);
 
 class ACanvas : public Fl_Double_Window {
-	Fl_Offscreen flo;
+	Fl_Offscreen flo = NULL;
 	
 	void draw(void);
 

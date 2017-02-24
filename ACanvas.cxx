@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 
 /* c++ stuff */
 #include <map>
@@ -63,12 +64,47 @@ void ACanvas::processCommand(string json)
 		fl_end_offscreen();
 	}
 	else
+	if(RE2::FullMatch(json, "resize (\\d+) (\\d+) (\\d+) (\\d+)", &m0, &m1, &m2, &m3)) {
+		int x = atoi(m0.c_str());
+		int y = atoi(m1.c_str());
+		int w = atoi(m2.c_str());
+		int h = atoi(m3.c_str());
+		/* actually resize */
+		resize(x, y, w, h);
+		/* make new offscreen buffer */
+		fl_delete_offscreen(flo);
+		flo = fl_create_offscreen(w, h);
+	}
+	else
 	if(RE2::FullMatch(json, "box (\\d+) (\\d+)", &m0, &m1)) {
 		int x = atoi(m0.c_str());
 		int y = atoi(m1.c_str());
 		fl_begin_offscreen(flo);
 		fl_draw_box(FL_FLAT_BOX, x, y, 20, 20, fl_rgb_color(0, 255, 0));
 		fl_end_offscreen();
+	}
+	else
+	if(RE2::FullMatch(json, "write (\\d+) (\\d+) (.*)", &m0, &m1, &m2)) {
+		int x = atoi(m0.c_str());
+		int y = atoi(m1.c_str());
+		string msg = m2;
+		fl_begin_offscreen(flo);
+		fl_draw(msg.c_str(), x, y);
+		fl_end_offscreen();
+	}
+	else
+	if(RE2::FullMatch(json, "font (.*) (\\d+)", &m0, &m1)) {
+		string fontName = m0;
+		int size = atoi(m1.c_str());
+		int fontId = 0;
+		fl_font(fontId, size);
+	}
+	else
+	if(RE2::FullMatch(json, "color ([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})", &m0, &m1, &m2)) {
+		int r = strtol(m0.c_str(), NULL, 16);
+		int g = strtol(m1.c_str(), NULL, 16);
+		int b = strtol(m2.c_str(), NULL, 16);
+		fl_color(fl_rgb_color(r,g,b));
 	}
 	else
 	if(RE2::FullMatch(json, "chess (\\d+) (\\d+) (.*)", &m0, &m1, &m2)) {

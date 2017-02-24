@@ -7,7 +7,7 @@
 
 class Driver {
 public:
-  ACanvas* make_window();
+  ACanvas* make_window(int x, int y, int width, int height);
   ACanvas *canvas;
 };
 #endif

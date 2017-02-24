@@ -3,8 +3,8 @@
 #include "Driver.h"
 #include "logic.h"
 
-ACanvas* Driver::make_window() {
-  { canvas = new ACanvas(0, 0, 1357, 660, "canvas");
+ACanvas* Driver::make_window(int x, int y, int width, int height) {
+  { canvas = new ACanvas(0, 0, 256, 256, "canvas");
     canvas->box(FL_FLAT_BOX);
     canvas->color(FL_BACKGROUND_COLOR);
     canvas->selection_color(FL_BACKGROUND_COLOR);
@@ -17,12 +17,19 @@ ACanvas* Driver::make_window() {
     canvas->when(FL_WHEN_RELEASE);
     canvas->end();
   } // ACanvas* canvas
+  canvas->resize(x, y, width, height);
   return canvas;
 }
 
 int main(int argc, char **argv) {
+  int width = 256;
+  int height = 256;
+  
+  if(argc > 1) width = atoi(argv[1]);
+  if(argc > 2) height = atoi(argv[2]);
+  
   Driver drv;
-  ACanvas *w = drv.make_window();
+  ACanvas *w = drv.make_window(0, 0, width, height);
   
   onGuiInit(&drv, argc, argv);
   
