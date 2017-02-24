@@ -1,21 +1,27 @@
+/* cstdlib */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <re2/re2.h>
-
+/* c++ stuff */
 #include <map>
 #include <string>
 #include <vector>
 #include <algorithm>
 using namespace std;
 
+/* google re2 stuff */
+#include <re2/re2.h>
+
+/* fltk stuff */
 #include <FL/Fl.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Double_Window.H>
-
 #include <FL/fl_draw.H>
+/* afltk stuff */
+#include <afltk/ChessBoard.h>
 
+/* our local stuff */
 #include "ACanvas.h"
 
 ACanvas::ACanvas(int x_, int y_, int w, int h, const char *label): 
@@ -44,7 +50,6 @@ void ACanvas::processCommand(string json)
 	printf("%s()\n", __func__);
 	
 	string m0, m1, m2, m3;
-	fl_begin_offscreen(flo);
 
 	while(!json.empty() && json[json.length()-1] == '\n') {
 		json.erase(json.length()-1);
@@ -53,16 +58,39 @@ void ACanvas::processCommand(string json)
 	//printf("matching on: -%s-\n", json.c_str());
 
 	if(RE2::FullMatch(json, "clear")) {
+		fl_begin_offscreen(flo);
 		fl_draw_box(FL_FLAT_BOX, 0, 0, w(), h(), fl_rgb_color(255, 255, 255));
+		fl_end_offscreen();
 	}
 	else
 	if(RE2::FullMatch(json, "box (\\d+) (\\d+)", &m0, &m1)) {
 		int x = atoi(m0.c_str());
 		int y = atoi(m1.c_str());
+		fl_begin_offscreen(flo);
 		fl_draw_box(FL_FLAT_BOX, x, y, 20, 20, fl_rgb_color(0, 255, 0));
+		fl_end_offscreen();
+	}
+	else
+	if(RE2::FullMatch(json, "chess (\\d+) (\\d+) (.*)", &m0, &m1, &m2)) {
+		int x = atoi(m0.c_str());
+		int y = atoi(m1.c_str());
+		string fen = m2;
+
+		ChessBoard cb(0,0,1,1);
+		cb.fenSet(fen);
+		/* let chessboard draw into offscreen buf */
+		Fl_Offscreen cbo = fl_create_offscreen(CHESSBOARD_WIDTH, CHESSBOARD_HEIGHT);
+		fl_begin_offscreen(cbo);
+		cb.draw();
+		fl_end_offscreen();
+		/* copy chess offscreen buf into our main offscreen buf */
+		fl_begin_offscreen(flo);
+		fl_copy_offscreen(x, y, CHESSBOARD_WIDTH, CHESSBOARD_HEIGHT, cbo, 0, 0);
+		fl_end_offscreen();
+		/* delete the chess buffer */
+		fl_delete_offscreen(cbo);
 	}
 
-	fl_end_offscreen();
 	redraw();
 }
 
