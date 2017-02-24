@@ -53,7 +53,7 @@ all: $(OBJS) acanvas
 
 
 acanvas: $(OBJS)
-	$(LINK) $(LD_FLTK) $(OBJS) -o acanvas $(LD_FLAGS) $(LD_FLTK) -lautils -lafltk
+	$(LINK) $(LD_FLTK) $(OBJS) -o acanvas $(LD_FLAGS) $(LD_FLTK) -lafltk -lre2
 
 install:
 	install ./acanvas /usr/local/bin

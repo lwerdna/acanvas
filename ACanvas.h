@@ -1,12 +1,11 @@
 #pragma once
 
-#include <pthread.h>
-
 #include <string>
 #include <vector>
-
 using namespace std;
 
+#include <FL/Fl.H>
+#include <FL/x.H>
 #include <FL/Fl_Double_Window.H>
 
 typedef void (*ChessBoard_callback)(void);
