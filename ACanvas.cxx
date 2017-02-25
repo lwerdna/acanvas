@@ -51,7 +51,7 @@ void ACanvas::processCommand(string json)
 {
 	//printf("%s()\n", __func__);
 	
-	string m0, m1, m2, m3;
+	string m0, m1, m2, m3, m4, m5, m6;
 
 	while(!json.empty() && json[json.length()-1] == '\n') {
 		json.erase(json.length()-1);
@@ -77,11 +77,16 @@ void ACanvas::processCommand(string json)
 		flo = fl_create_offscreen(w, h);
 	}
 	else
-	if(RE2::FullMatch(json, "box (\\d+) (\\d+)", &m0, &m1)) {
+	if(RE2::FullMatch(json, "box (\\d+) (\\d+) (\\d+) (\\d+) ([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})", &m0, &m1, &m2, &m3, &m4, &m5, &m6)) {
 		int x = atoi(m0.c_str());
 		int y = atoi(m1.c_str());
+		int w = atoi(m2.c_str());
+		int h = atoi(m3.c_str());
+		int r = strtol(m4.c_str(), NULL, 16);
+		int g = strtol(m5.c_str(), NULL, 16);
+		int b = strtol(m6.c_str(), NULL, 16);
 		fl_begin_offscreen(flo);
-		fl_draw_box(FL_FLAT_BOX, x, y, 20, 20, fl_rgb_color(0, 255, 0));
+		fl_draw_box(FL_FLAT_BOX, x, y, w, h, fl_rgb_color(r, g, b));
 		fl_end_offscreen();
 	}
 	else
@@ -144,8 +149,8 @@ int ACanvas::handle(int event)
 		int mouseX = Fl::event_x();
 		int mouseY = Fl::event_y();
 		fl_begin_offscreen(flo);
-		//printf("drawing box at %d,%d\n", mouseX, mouseY);
-		fl_draw_box(FL_FLAT_BOX, mouseX, mouseY, 20, 20, fl_rgb_color(0, 0, 255));
+		printf("click at %d,%d\n", mouseX, mouseY);
+		//fl_draw_box(FL_FLAT_BOX, mouseX, mouseY, 20, 20, fl_rgb_color(0, 0, 255));
 		fl_end_offscreen();
 		//printf("translated click (%d,%d) to (rank,file)=(%d,%d)\n",
 		//	mouseX, mouseY, selRank, selFile);
